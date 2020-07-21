@@ -1,7 +1,6 @@
 package com.example.daggerexample.viewmodel;
 
-import android.util.Log;
-
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -12,23 +11,28 @@ import java.util.List;
 
 public class MainViewModel extends ViewModel{
 
-    private MutableLiveData<List<FoodItem>> mutableLiveDataFoodItemList;
+    private MutableLiveData<List<FoodItem>> mutableLiveDataFoodListNewAddition;
     private List<FoodItem> foodItemList;
     private FoodItem mFoodItem;
-    private static final String TAG = "MainViewModel";
+   private MutableLiveData<List<FoodItem>> mutableLiveDataFinalFoodList;
 
     public MainViewModel() {
-        mutableLiveDataFoodItemList = new MutableLiveData<>();
+        mutableLiveDataFoodListNewAddition = new MutableLiveData<>();
+        mutableLiveDataFinalFoodList = new MutableLiveData<>();
         init();
     }
 
-    public MutableLiveData<List<FoodItem>> getFoodListMutableLiveData() {
-        return mutableLiveDataFoodItemList;
+    public LiveData<List<FoodItem>> getFoodListMutableLiveDataNewAddition() {
+        return mutableLiveDataFoodListNewAddition;
+    }
+
+    public LiveData<List<FoodItem>> getFoodOnOrder() {
+        return mutableLiveDataFinalFoodList;
     }
 
     private void init(){
         populateList();
-        mutableLiveDataFoodItemList.setValue(foodItemList);
+        mutableLiveDataFoodListNewAddition.setValue(foodItemList);
     }
 
     private void populateList(){
@@ -40,7 +44,7 @@ public class MainViewModel extends ViewModel{
     public void addNewRow() {
         mFoodItem = new FoodItem("", "");
         foodItemList.add(mFoodItem);
-        mutableLiveDataFoodItemList.setValue(foodItemList);
+        mutableLiveDataFoodListNewAddition.setValue(foodItemList);
     }
 
     public void updateRowData(String foodItem, int position) {
@@ -48,15 +52,7 @@ public class MainViewModel extends ViewModel{
     }
 
     public void getFoodDetails() {
-        StringBuilder foodDisplay = new StringBuilder("Food name --- \n");
-        for(FoodItem food : foodItemList) {
-            if(!food.getFoodName().isEmpty() && food.getDate()!=null) {
-                foodDisplay.append(food.getFoodName());
-                foodDisplay.append(" : " + food.getDate());
-                foodDisplay.append("\n");
-            }
-        }
-        Log.e(TAG, "getFoodDetails: "+foodDisplay );
+        mutableLiveDataFinalFoodList.setValue(foodItemList);
     }
 
     public void updateDate(String date, int position) {
