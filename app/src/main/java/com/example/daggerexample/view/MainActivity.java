@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.daggerexample.R;
 import com.example.daggerexample.model.FoodItem;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements FoodItemRecyclerV
     private Button btnOrder;
     private MainViewModel viewModel;
     private MainActivity context;
+    private static final String TAG = "MainActivity";
 
     private List<FoodItem> foodItemList = new ArrayList<>();
 
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity implements FoodItemRecyclerV
         btnOrder = findViewById(R.id.btnOrder);
         context = this;
         viewModel = ViewModelProviders.of(context).get(MainViewModel.class);
-        viewModel.getFoodListMutableLiveData().observe(this, foodListObserver);
+        viewModel.getFoodListMutableLiveDataNewAddition().observe(this, foodListObserver);
+        viewModel.getFoodOnOrder().observe(this, foodDetailsObserver);
     }
 
     private void initRecyclerView() {
@@ -76,6 +79,22 @@ public class MainActivity extends AppCompatActivity implements FoodItemRecyclerV
         @Override
         public void onChanged(List<FoodItem> foodItems) {
             mAdapter.notifyData(foodItems);
+        }
+    };
+
+    Observer<List<FoodItem>> foodDetailsObserver = new Observer<List<FoodItem>>() {
+        @Override
+        public void onChanged(List<FoodItem> foodItems) {
+
+            StringBuilder foodDisplay = new StringBuilder("Food name --- \n");
+            for(FoodItem food : foodItems) {
+                if(!food.getFoodName().isEmpty() && food.getDate()!=null) {
+                    foodDisplay.append(food.getFoodName());
+                    foodDisplay.append(" : " + food.getDate());
+                    foodDisplay.append("\n");
+                }
+            }
+            Toast.makeText(MainActivity.this, foodDisplay , Toast.LENGTH_LONG).show();
         }
     };
 
