@@ -1,8 +1,11 @@
 package com.example.daggerexample.service;
 
+import com.example.daggerexample.di.DaggerApiComponentInterface;
 import com.example.daggerexample.model.CountryModel;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Single;
 import retrofit2.Retrofit;
@@ -11,16 +14,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiService {
 
-    private final static String BASE_URL = "https://raw.githubusercontent.com/";
     private static ApiService instance;
-    private RetroClient api = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .build()
-            .create(RetroClient.class);
+
+    @Inject
+    public RetroClientInterface api;
 
     private ApiService(){
+        DaggerApiComponentInterface.create().injectRetroClient(this);
     }
 
     public static ApiService getInstance() {

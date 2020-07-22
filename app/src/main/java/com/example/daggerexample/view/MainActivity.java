@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.daggerexample.R;
 import com.example.daggerexample.model.FoodItem;
-import com.example.daggerexample.rv.FoodItemRecyclerView;
+import com.example.daggerexample.view.rv.FoodItemRecyclerView;
 import com.example.daggerexample.viewmodel.MainViewModel;
 
 import java.util.ArrayList;
@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements FoodItemRecyclerV
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                * First create the bean object collecting all the data from the fields
+                * and pass it to updatelist to viewmodel.
+                * */
                 viewModel.addNewRow();
             }
         });
