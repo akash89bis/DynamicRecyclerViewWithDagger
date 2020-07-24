@@ -7,10 +7,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import io.reactivex.Observable;
 
 public class ApiService {
 
@@ -30,7 +27,7 @@ public class ApiService {
         return instance;
     }
 
-    public Single<List<CountryModel>> getCountryList(){
+    public Observable<List<CountryModel>> getCountryList(){
         return api.getCountryList();
     }
 }

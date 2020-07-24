@@ -1,6 +1,7 @@
 package com.example.daggerexample.viewmodel;
 
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -12,16 +13,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class CountryViewModel extends ViewModel {
 
-    public MutableLiveData<List<CountryModel>> countries = new MutableLiveData<>();
-    public MutableLiveData<Boolean> countryLoadError = new MutableLiveData<>();
-    public MutableLiveData<Boolean> loading = new MutableLiveData<>();
+    private MutableLiveData<List<CountryModel>> countries;
+    private MutableLiveData<Boolean> countryLoadError;
+    private MutableLiveData<Boolean> loading;
 
     @Inject
     public ApiService apiService;
@@ -30,6 +32,21 @@ public class CountryViewModel extends ViewModel {
     public CountryViewModel(){
         super();
         DaggerApiComponentInterface.create().injectApiService(this);
+        countries = new MutableLiveData<>();
+        countryLoadError = new MutableLiveData<>();
+        loading = new MutableLiveData<>();
+    }
+
+    public LiveData<List<CountryModel>> getCountriesListSuccess(){
+        return countries;
+    }
+
+    public LiveData<Boolean> getCountriesError(){
+        return countryLoadError;
+    }
+
+    public LiveData<Boolean> getLoading(){
+        return loading;
     }
 
     public void getCountries(){
@@ -39,9 +56,10 @@ public class CountryViewModel extends ViewModel {
                 apiService.getCountryList()
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<List<CountryModel>>() {
+                .subscribeWith(new DisposableObserver<List<CountryModel>>() {
+
                     @Override
-                    public void onSuccess(List<CountryModel> countryModels) {
+                    public void onNext(List<CountryModel> countryModels) {
                         countries.setValue(countryModels);
                         countryLoadError.setValue(false);
                         loading.setValue(false);
@@ -52,6 +70,11 @@ public class CountryViewModel extends ViewModel {
                         countryLoadError.setValue(true);
                         loading.setValue(false);
                         e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 })
         );

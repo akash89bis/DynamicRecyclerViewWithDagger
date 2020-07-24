@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.daggerexample.R;
 import com.example.daggerexample.model.CountryModel;
+import com.example.daggerexample.view.GlideUtil;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
         void bind(CountryModel country) {
             countryName.setText(country.getCountryName());
             countryCapital.setText(country.getCapital());
-            //Util.loadImage(countryImage, country.getFlag(), Util.getProgressDrawable(countryImage.getContext()));
+            GlideUtil.loadImage(countryImage, country.getFlag(), GlideUtil.getProgressDrawable(countryImage.getContext()));
         }
     }
 }

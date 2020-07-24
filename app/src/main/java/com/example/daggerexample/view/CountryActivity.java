@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,12 +56,9 @@ public class CountryActivity extends AppCompatActivity {
 
         initRecyclerView();
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                viewModel.getCountries();
-                refreshLayout.setRefreshing(false);
-            }
+        refreshLayout.setOnRefreshListener(() -> {
+            viewModel.getCountries();
+            refreshLayout.setRefreshing(false);
         });
 
         observerViewModel();
@@ -76,32 +72,24 @@ public class CountryActivity extends AppCompatActivity {
     }
 
     private void observerViewModel() {
-        viewModel.countries.observe(this, new Observer<List<CountryModel>>() {
-            @Override
-            public void onChanged(List<CountryModel> countryModels) {
-                if (countryModels != null) {
-                    recyclerView.setVisibility(View.VISIBLE);
-                    mAdapter.updateCountries(countryModels);
-                }
+        viewModel.getCountriesListSuccess().observe(this, countryModels -> {
+            if (countryModels != null) {
+                recyclerView.setVisibility(View.VISIBLE);
+                mAdapter.updateCountries(countryModels);
             }
         });
-        viewModel.countryLoadError.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isError) {
+        viewModel.getCountriesError().observe(this, isError -> {
                 if (isError != null) {
                     listError.setVisibility(isError ? View.VISIBLE : View.GONE);
                 }
-            }
+
         });
-        viewModel.loading.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isLoading) {
-                if (isLoading != null) {
-                    loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-                    if (isLoading) {
-                        listError.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.GONE);
-                    }
+        viewModel.getLoading().observe(this, isLoading -> {
+            if (isLoading != null) {
+                loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if (isLoading) {
+                    listError.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
                 }
             }
         });

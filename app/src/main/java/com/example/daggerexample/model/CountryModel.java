@@ -10,9 +10,13 @@ public class CountryModel {
     @SerializedName("capital")
     private String capital;
 
-    public CountryModel(String countryName, String capital) {
+    @SerializedName("flagPNG")
+    private String flag;
+
+    public CountryModel(String countryName, String capital, String flag) {
         this.countryName = countryName;
         this.capital = capital;
+        this.flag = flag;
     }
 
     public String getCountryName() {
@@ -21,5 +25,9 @@ public class CountryModel {
 
     public String getCapital() {
         return capital;
+    }
+
+    public String getFlag() {
+        return flag;
     }
 }
