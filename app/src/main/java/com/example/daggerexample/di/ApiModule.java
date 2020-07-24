@@ -1,6 +1,6 @@
 package com.example.daggerexample.di;
 
-import com.example.daggerexample.service.ApiService;
+import com.example.daggerexample.service.NetworkService;
 import com.example.daggerexample.service.RetroClientInterface;
 
 import dagger.Module;
@@ -26,8 +26,8 @@ public class ApiModule {
     }
 
     @Provides
-    public ApiService providesApiService(){
-        return ApiService.getInstance();
+    public NetworkService providesApiService(){
+        return NetworkService.getInstance();
     }
 
 }

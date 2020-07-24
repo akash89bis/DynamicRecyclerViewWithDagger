@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.daggerexample.di.DaggerApiComponentInterface;
 import com.example.daggerexample.model.CountryModel;
-import com.example.daggerexample.service.ApiService;
+import com.example.daggerexample.service.NetworkService;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class CountryViewModel extends ViewModel {
     private MutableLiveData<Boolean> loading;
 
     @Inject
-    public ApiService apiService;
+    public NetworkService networkService;
     private CompositeDisposable disposable = new CompositeDisposable();
 
     public CountryViewModel(){
@@ -53,7 +53,7 @@ public class CountryViewModel extends ViewModel {
 
         loading.setValue(true);
         disposable.add(
-                apiService.getCountryList()
+                networkService.getCountryList()
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<CountryModel>>() {

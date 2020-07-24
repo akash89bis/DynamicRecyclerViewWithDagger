@@ -9,20 +9,20 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 
-public class ApiService {
+public class NetworkService {
 
-    private static ApiService instance;
+    private static NetworkService instance;
 
     @Inject
     public RetroClientInterface api;
 
-    private ApiService(){
+    private NetworkService(){
         DaggerApiComponentInterface.create().injectRetroClient(this);
     }
 
-    public static ApiService getInstance() {
+    public static NetworkService getInstance() {
         if (instance == null) {
-            instance = new ApiService();
+            instance = new NetworkService();
         }
         return instance;
     }
