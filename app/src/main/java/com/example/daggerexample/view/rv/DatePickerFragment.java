@@ -1,4 +1,4 @@
-package com.example.daggerexample.rv;
+package com.example.daggerexample.view.rv;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -42,6 +42,7 @@ public class DatePickerFragment extends DialogFragment
 
         DatePickerDialog dialogDatePicker = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog_MinWidth,this, year, month, day);
         dialogDatePicker.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialogDatePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
         return dialogDatePicker;
 
     }

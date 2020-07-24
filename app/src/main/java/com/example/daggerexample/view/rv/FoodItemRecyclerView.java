@@ -1,4 +1,4 @@
-package com.example.daggerexample.rv;
+package com.example.daggerexample.view.rv;
 
 import android.content.Context;
 import android.util.Log;

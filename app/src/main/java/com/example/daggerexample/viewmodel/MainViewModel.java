@@ -35,6 +35,13 @@ public class MainViewModel extends ViewModel{
         mutableLiveDataFoodListNewAddition.setValue(foodItemList);
     }
 
+    /*
+    * 1. Create one method name updated list in viewmodel which will accept
+    * FoodItem object and add in list which will be inside viewmodel.
+    * Make it observable/live data.
+    *
+    * 2. create the list as a field var and make it mutablelivedata.
+    * */
     private void populateList(){
         foodItemList = new ArrayList<>();
         mFoodItem = new FoodItem("","");
