@@ -1,9 +1,13 @@
 package com.example.daggerexample.view.rv;
 
+import android.graphics.Color;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,15 +25,17 @@ import butterknife.ButterKnife;
 
 public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.CountryViewHolder> {
 
-    private List<CountryModel> countries;
+    private List<CountryModel> countriesList;
+    private final SparseBooleanArray array = new SparseBooleanArray();
 
     public CountryListAdapter(List<CountryModel> countries) {
-        this.countries = countries;
+        this.countriesList = countries;
     }
 
     public void updateCountries(List<CountryModel> newCountries) {
-        countries.clear();
-        countries.addAll(newCountries);
+        countriesList.clear();
+        countriesList.addAll(newCountries);
+        array.clear();
         notifyDataSetChanged();
     }
 
@@ -42,12 +48,12 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull CountryViewHolder holder, int position) {
-        holder.bind(countries.get(position));
+        holder.bind(countriesList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return countries.size();
+        return countriesList.size();
     }
 
     class CountryViewHolder extends RecyclerView.ViewHolder {
@@ -61,7 +67,16 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
         @BindView(R.id.capital)
         TextView countryCapital;
 
-        public CountryViewHolder(@NonNull View itemView) {
+        @BindView(R.id.item_switch)
+        CheckBox itemSwitch;
+
+        @BindView(R.id.item_lin_layout)
+        LinearLayout itemLinLayout;
+
+        @BindView(R.id.txtCountryCode)
+        TextView txtCountryCode;
+
+        CountryViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -70,6 +85,25 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
             countryName.setText(country.getCountryName());
             countryCapital.setText(country.getCapital());
             GlideUtil.loadImage(countryImage, country.getFlag(), GlideUtil.getProgressDrawable(countryImage.getContext()));
+            txtCountryCode.setText(country.getCountryCode());
+
+            itemLinLayout.setOnClickListener(v -> {
+                if(array.get(getAdapterPosition(),false)){
+                    array.put(getAdapterPosition(),false);
+                }else{
+                    array.put(getAdapterPosition(),true);
+                }
+                notifyDataSetChanged();
+            });
+
+            if (array.get(getAdapterPosition())) {
+                itemSwitch.setChecked(true);
+                itemLinLayout.setBackgroundColor(Color.parseColor("#D733FF"));
+            } else {
+                itemSwitch.setChecked(false);
+                itemLinLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+            }
+
         }
     }
 }

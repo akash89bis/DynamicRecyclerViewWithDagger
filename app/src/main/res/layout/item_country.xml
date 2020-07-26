@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
+    android:id="@+id/item_lin_layout"
     android:layout_height="100dp">
 
     <ImageView
@@ -31,6 +32,22 @@
             style="@style/Text"
             android:text="Capital"/>
 
+        <TextView
+            android:id="@+id/txtCountryCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/countryCode"
+            android:text="Country code"/>
+
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/item_switch"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listChoiceIndicatorMultiple"
+        android:button="@null" />
 
 </LinearLayout>
