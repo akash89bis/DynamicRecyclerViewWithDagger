@@ -29,9 +29,10 @@ public class CountryViewModel extends ViewModel {
     private MutableLiveData<Boolean> loading;
     private List<CountryModel> listCountry;
     private static final String TAG = "CountryViewModel";
+    private MutableLiveData<Integer> sumCountryCode;
 
     @Inject
-    public NetworkService networkService;
+    NetworkService networkService;
     private CompositeDisposable disposable = new CompositeDisposable();
 
     public CountryViewModel(){
@@ -41,6 +42,7 @@ public class CountryViewModel extends ViewModel {
         countryLoadError = new MutableLiveData<>();
         loading = new MutableLiveData<>();
         listCountry = new ArrayList<>();
+        sumCountryCode = new MutableLiveData<>();
     }
 
     public LiveData<List<CountryModel>> getCountriesListSuccess(){
@@ -53,6 +55,10 @@ public class CountryViewModel extends ViewModel {
 
     public LiveData<Boolean> getLoading(){
         return loading;
+    }
+
+    public LiveData<Integer> getCountryCodeSum(){
+        return sumCountryCode;
     }
 
     public void getCountries(){
@@ -95,13 +101,16 @@ public class CountryViewModel extends ViewModel {
     }
 
     public void countryAdded(CountryModel countryModel) {
+        int sum = 0;
         if (listCountry.contains(countryModel))
             listCountry.remove(countryModel);
         else
             listCountry.add(countryModel);
-    }
 
-    public void getCartCountries() {
-        Log.e(TAG, "getCartCountries: "+ listCountry.size());
+        for(CountryModel country: listCountry){
+            sum = sum +Integer.parseInt(country.getCountryCode());
+        }
+
+        sumCountryCode.setValue(sum);
     }
 }

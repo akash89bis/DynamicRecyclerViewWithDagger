@@ -66,12 +66,7 @@ public class CountryActivity extends AppCompatActivity {
             refreshLayout.setRefreshing(false);
         });
 
-        btnClick.setOnClickListener(v -> {
-            viewModel.getCartCountries();
-        });
-
         observerViewModel();
-
         setupItemClick();
     }
 
@@ -112,6 +107,8 @@ public class CountryActivity extends AppCompatActivity {
                 }
             }
         });
+
+        viewModel.getCountryCodeSum().observe(this, integer -> btnClick.setText(String.valueOf(integer)));
     }
 
     @Override
