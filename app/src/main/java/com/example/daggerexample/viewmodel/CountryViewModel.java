@@ -95,11 +95,10 @@ public class CountryViewModel extends ViewModel {
     }
 
     public void countryAdded(CountryModel countryModel) {
-        listCountry.add(countryModel);
-    }
-
-    public void countryRemoved(CountryModel countryModel) {
-        listCountry.remove(countryModel);
+        if (listCountry.contains(countryModel))
+            listCountry.remove(countryModel);
+        else
+            listCountry.add(countryModel);
     }
 
     public void getCartCountries() {

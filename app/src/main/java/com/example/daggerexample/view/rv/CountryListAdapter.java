@@ -29,9 +29,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
 
     private List<CountryModel> countriesList;
     private final SparseBooleanArray array = new SparseBooleanArray();
-
     private PublishSubject<CountryModel> countryAdded = PublishSubject.create();
-    private PublishSubject<CountryModel> countryRemoved = PublishSubject.create();
 
     public CountryListAdapter(List<CountryModel> countries) {
         this.countriesList = countries;
@@ -39,10 +37,6 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
 
     public Observable<CountryModel> getAddedCountryObservable() {
         return countryAdded;
-    }
-
-    public Observable<CountryModel> getRemovedCountryObservable() {
-        return countryRemoved;
     }
 
     public void updateCountries(List<CountryModel> newCountries) {
@@ -102,11 +96,10 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
             txtCountryCode.setText(country.getCountryCode());
 
             itemLinLayout.setOnClickListener(v -> {
+                countryAdded.onNext(country);
                 if(array.get(getAdapterPosition(),false)){
-                    countryRemoved.onNext(country);
                     array.put(getAdapterPosition(),false);
                 }else{
-                    countryAdded.onNext(country);
                     array.put(getAdapterPosition(),true);
                 }
                 notifyDataSetChanged();

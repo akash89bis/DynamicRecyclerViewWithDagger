@@ -44,14 +44,10 @@ public class CountryActivity extends AppCompatActivity {
     @BindView(R.id.btn_click)
     Button btnClick;
 
-
     private CountryViewModel viewModel;
     private CountryListAdapter mAdapter ;
-
     private List<CountryModel> countryList = new ArrayList<>();
-
     private Disposable subscribe = null;
-    private Disposable subscribeRemovedCountry = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,15 +79,8 @@ public class CountryActivity extends AppCompatActivity {
         subscribe = mAdapter.getAddedCountryObservable()
                 .subscribe(countryModel ->{
                         viewModel.countryAdded(countryModel);
-                        Toast.makeText(this, "Country Added --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Country Selected --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
                 });
-
-        subscribeRemovedCountry = mAdapter.getRemovedCountryObservable()
-                .subscribe(countryModel -> {
-                    viewModel.countryRemoved(countryModel);
-                    Toast.makeText(this, "Country Removed --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
-                });
-
     }
 
     private void initRecyclerView() {
@@ -128,7 +117,6 @@ public class CountryActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        subscribeRemovedCountry.dispose();
         subscribe.dispose();
     }
 }
