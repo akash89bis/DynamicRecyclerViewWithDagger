@@ -1,6 +1,8 @@
 package com.example.daggerexample.viewmodel;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -9,6 +11,7 @@ import com.example.daggerexample.di.DaggerApiComponentInterface;
 import com.example.daggerexample.model.CountryModel;
 import com.example.daggerexample.service.NetworkService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,6 +27,8 @@ public class CountryViewModel extends ViewModel {
     private MutableLiveData<List<CountryModel>> countries;
     private MutableLiveData<Boolean> countryLoadError;
     private MutableLiveData<Boolean> loading;
+    private List<CountryModel> listCountry;
+    private static final String TAG = "CountryViewModel";
 
     @Inject
     public NetworkService networkService;
@@ -35,6 +40,7 @@ public class CountryViewModel extends ViewModel {
         countries = new MutableLiveData<>();
         countryLoadError = new MutableLiveData<>();
         loading = new MutableLiveData<>();
+        listCountry = new ArrayList<>();
     }
 
     public LiveData<List<CountryModel>> getCountriesListSuccess(){
@@ -51,6 +57,7 @@ public class CountryViewModel extends ViewModel {
 
     public void getCountries(){
 
+        listCountry.clear();
         loading.setValue(true);
         disposable.add(
                 networkService.getCountryList()
@@ -84,5 +91,18 @@ public class CountryViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
+        listCountry.clear();
+    }
+
+    public void countryAdded(CountryModel countryModel) {
+        listCountry.add(countryModel);
+    }
+
+    public void countryRemoved(CountryModel countryModel) {
+        listCountry.remove(countryModel);
+    }
+
+    public void getCartCountries() {
+        Log.e(TAG, "getCartCountries: "+ listCountry.size());
     }
 }

@@ -2,8 +2,10 @@ package com.example.daggerexample.view;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 
 public class CountryActivity extends AppCompatActivity {
 
@@ -38,11 +41,17 @@ public class CountryActivity extends AppCompatActivity {
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.btn_click)
+    Button btnClick;
+
 
     private CountryViewModel viewModel;
     private CountryListAdapter mAdapter ;
 
     private List<CountryModel> countryList = new ArrayList<>();
+
+    private Disposable subscribe = null;
+    private Disposable subscribeRemovedCountry = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +70,28 @@ public class CountryActivity extends AppCompatActivity {
             refreshLayout.setRefreshing(false);
         });
 
+        btnClick.setOnClickListener(v -> {
+            viewModel.getCartCountries();
+        });
+
         observerViewModel();
+
+        setupItemClick();
+    }
+
+    private void setupItemClick() {
+        subscribe = mAdapter.getAddedCountryObservable()
+                .subscribe(countryModel ->{
+                        viewModel.countryAdded(countryModel);
+                        Toast.makeText(this, "Country Added --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
+                });
+
+        subscribeRemovedCountry = mAdapter.getRemovedCountryObservable()
+                .subscribe(countryModel -> {
+                    viewModel.countryRemoved(countryModel);
+                    Toast.makeText(this, "Country Removed --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
+                });
+
     }
 
     private void initRecyclerView() {
@@ -93,5 +123,12 @@ public class CountryActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        subscribeRemovedCountry.dispose();
+        subscribe.dispose();
     }
 }
