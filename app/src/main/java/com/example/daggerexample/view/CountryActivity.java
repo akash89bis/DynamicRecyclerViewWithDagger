@@ -8,7 +8,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,15 +18,19 @@ import com.example.daggerexample.R;
 import com.example.daggerexample.model.CountryModel;
 import com.example.daggerexample.view.rv.CountryListAdapter;
 import com.example.daggerexample.viewmodel.CountryViewModel;
+import com.example.daggerexample.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.Disposable;
 
-public class CountryActivity extends AppCompatActivity {
+public class CountryActivity extends DaggerAppCompatActivity {
 
     @BindView(R.id.countriesList)
     RecyclerView recyclerView;
@@ -49,14 +52,17 @@ public class CountryActivity extends AppCompatActivity {
     private List<CountryModel> countryList = new ArrayList<>();
     private Disposable subscribe = null;
 
+    @Inject
+    ViewModelFactory providerFactory;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_country);
 
         ButterKnife.bind(this);
-
-        viewModel = ViewModelProviders.of(this).get(CountryViewModel.class);
+        viewModel = ViewModelProviders.of(this, providerFactory).get(CountryViewModel.class);
         viewModel.getCountries();
 
         initRecyclerView();

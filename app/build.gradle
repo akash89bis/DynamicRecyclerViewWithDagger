@@ -32,7 +32,7 @@ def lifecycleExtensionVersion = '1.1.1'
 def retrofitVersion = '2.3.0'
 def rxJavaVersion = '2.1.1'
 def butterknifeVersion = '10.1.0'
-def daggerVersion = '2.14.1'
+def daggerVersion = '2.22'
 def glideVersion = '4.11.0'
 
 

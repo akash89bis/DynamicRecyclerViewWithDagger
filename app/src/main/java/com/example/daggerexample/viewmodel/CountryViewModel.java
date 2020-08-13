@@ -7,9 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.daggerexample.di.DaggerApiComponentInterface;
 import com.example.daggerexample.model.CountryModel;
-import com.example.daggerexample.service.NetworkService;
+import com.example.daggerexample.network.ApiRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +30,21 @@ public class CountryViewModel extends ViewModel {
     private static final String TAG = "CountryViewModel";
     private MutableLiveData<Integer> sumCountryCode;
 
-    @Inject
-    NetworkService networkService;
+
+    private ApiRepository apiRepository;
+
     private CompositeDisposable disposable = new CompositeDisposable();
 
-    public CountryViewModel(){
+    @Inject
+    CountryViewModel(ApiRepository apiRepository){
         super();
-        DaggerApiComponentInterface.create().injectApiService(this);
         countries = new MutableLiveData<>();
         countryLoadError = new MutableLiveData<>();
         loading = new MutableLiveData<>();
         listCountry = new ArrayList<>();
         sumCountryCode = new MutableLiveData<>();
+        this.apiRepository = apiRepository;
+        Log.e(TAG, "CountryViewModel: Constructor injected" );
     }
 
     public LiveData<List<CountryModel>> getCountriesListSuccess(){
@@ -66,7 +68,7 @@ public class CountryViewModel extends ViewModel {
         listCountry.clear();
         loading.setValue(true);
         disposable.add(
-                networkService.getCountryList()
+                apiRepository.getCountryList()
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<CountryModel>>() {
