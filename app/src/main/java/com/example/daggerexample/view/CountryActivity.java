@@ -2,8 +2,10 @@ package com.example.daggerexample.view;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 
 public class CountryActivity extends AppCompatActivity {
 
@@ -38,11 +41,13 @@ public class CountryActivity extends AppCompatActivity {
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.btn_click)
+    Button btnClick;
 
     private CountryViewModel viewModel;
     private CountryListAdapter mAdapter ;
-
     private List<CountryModel> countryList = new ArrayList<>();
+    private Disposable subscribe = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +67,15 @@ public class CountryActivity extends AppCompatActivity {
         });
 
         observerViewModel();
+        setupItemClick();
+    }
+
+    private void setupItemClick() {
+        subscribe = mAdapter.getAddedCountryObservable()
+                .subscribe(countryModel ->{
+                        viewModel.countryAdded(countryModel);
+                        Toast.makeText(this, "Country Selected --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
+                });
     }
 
     private void initRecyclerView() {
@@ -93,5 +107,13 @@ public class CountryActivity extends AppCompatActivity {
                 }
             }
         });
+
+        viewModel.getCountryCodeSum().observe(this, integer -> btnClick.setText(String.valueOf(integer)));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        subscribe.dispose();
     }
 }

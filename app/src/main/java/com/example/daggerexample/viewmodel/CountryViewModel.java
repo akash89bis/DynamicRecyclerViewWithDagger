@@ -1,14 +1,17 @@
 package com.example.daggerexample.viewmodel;
 
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.daggerexample.di.DaggerApiComponentInterface;
 import com.example.daggerexample.model.CountryModel;
-import com.example.daggerexample.service.ApiService;
+import com.example.daggerexample.service.NetworkService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,9 +27,12 @@ public class CountryViewModel extends ViewModel {
     private MutableLiveData<List<CountryModel>> countries;
     private MutableLiveData<Boolean> countryLoadError;
     private MutableLiveData<Boolean> loading;
+    private List<CountryModel> listCountry;
+    private static final String TAG = "CountryViewModel";
+    private MutableLiveData<Integer> sumCountryCode;
 
     @Inject
-    public ApiService apiService;
+    NetworkService networkService;
     private CompositeDisposable disposable = new CompositeDisposable();
 
     public CountryViewModel(){
@@ -35,6 +41,8 @@ public class CountryViewModel extends ViewModel {
         countries = new MutableLiveData<>();
         countryLoadError = new MutableLiveData<>();
         loading = new MutableLiveData<>();
+        listCountry = new ArrayList<>();
+        sumCountryCode = new MutableLiveData<>();
     }
 
     public LiveData<List<CountryModel>> getCountriesListSuccess(){
@@ -49,11 +57,16 @@ public class CountryViewModel extends ViewModel {
         return loading;
     }
 
+    public LiveData<Integer> getCountryCodeSum(){
+        return sumCountryCode;
+    }
+
     public void getCountries(){
 
+        listCountry.clear();
         loading.setValue(true);
         disposable.add(
-                apiService.getCountryList()
+                networkService.getCountryList()
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<CountryModel>>() {
@@ -84,5 +97,20 @@ public class CountryViewModel extends ViewModel {
     protected void onCleared() {
         super.onCleared();
         disposable.clear();
+        listCountry.clear();
+    }
+
+    public void countryAdded(CountryModel countryModel) {
+        int sum = 0;
+        if (listCountry.contains(countryModel))
+            listCountry.remove(countryModel);
+        else
+            listCountry.add(countryModel);
+
+        for(CountryModel country: listCountry){
+            sum = sum +Integer.parseInt(country.getCountryCode());
+        }
+
+        sumCountryCode.setValue(sum);
     }
 }
