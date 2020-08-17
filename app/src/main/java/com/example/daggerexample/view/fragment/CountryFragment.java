@@ -1,7 +1,6 @@
 package com.example.daggerexample.view.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,9 +59,6 @@ public class CountryFragment extends DaggerFragment {
     @Inject
     ViewModelFactory providerFactory;
 
-    private static final String TAG = "CountryFragment";
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,7 +69,7 @@ public class CountryFragment extends DaggerFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()), providerFactory).get(CountryViewModel.class);
+        viewModel = ViewModelProviders.of(this, providerFactory).get(CountryViewModel.class);
         viewModel.getCountries();
 
         initRecyclerView();
@@ -127,19 +121,12 @@ public class CountryFragment extends DaggerFragment {
             }
         });
 
-        viewModel.getCountryCodeSum().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                Log.e(TAG, "onChanged: integer value ---"+integer);
-                btnClick.setText(String.valueOf(integer));
-            }
-        });
+        viewModel.getCountryCodeSum().observe(this, integer -> btnClick.setText(String.valueOf(integer)));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e(TAG, "onDestroyView: called" );
         subscribe.dispose();
     }
 }
