@@ -1,13 +1,19 @@
-package com.example.daggerexample.view;
+package com.example.daggerexample.view.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,15 +28,16 @@ import com.example.daggerexample.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.android.support.DaggerAppCompatActivity;
+import dagger.android.support.DaggerFragment;
 import io.reactivex.disposables.Disposable;
 
-public class CountryActivity extends DaggerAppCompatActivity {
+public class CountryFragment extends DaggerFragment {
 
     @BindView(R.id.countriesList)
     RecyclerView recyclerView;
@@ -55,14 +62,20 @@ public class CountryActivity extends DaggerAppCompatActivity {
     @Inject
     ViewModelFactory providerFactory;
 
+    private static final String TAG = "CountryFragment";
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_country, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_country);
-
-        ButterKnife.bind(this);
-        viewModel = ViewModelProviders.of(this, providerFactory).get(CountryViewModel.class);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()), providerFactory).get(CountryViewModel.class);
         viewModel.getCountries();
 
         initRecyclerView();
@@ -80,13 +93,13 @@ public class CountryActivity extends DaggerAppCompatActivity {
         subscribe = mAdapter.getAddedCountryObservable()
                 .subscribe(countryModel ->{
                         viewModel.countryAdded(countryModel);
-                        Toast.makeText(this, "Country Selected --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Country Selected --"+countryModel.getCountryName(), Toast.LENGTH_LONG).show();
                 });
     }
 
     private void initRecyclerView() {
         mAdapter = new CountryListAdapter(countryList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
     }
@@ -114,12 +127,19 @@ public class CountryActivity extends DaggerAppCompatActivity {
             }
         });
 
-        viewModel.getCountryCodeSum().observe(this, integer -> btnClick.setText(String.valueOf(integer)));
+        viewModel.getCountryCodeSum().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                Log.e(TAG, "onChanged: integer value ---"+integer);
+                btnClick.setText(String.valueOf(integer));
+            }
+        });
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e(TAG, "onDestroyView: called" );
         subscribe.dispose();
     }
 }
