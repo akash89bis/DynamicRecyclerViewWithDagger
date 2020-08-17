@@ -2,15 +2,12 @@ package com.example.daggerexample.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.daggerexample.R;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends DaggerAppCompatActivity {
 
     private Button btnAddFood;
     private Button btnShowCountry;
@@ -23,21 +20,15 @@ public class HomeActivity extends AppCompatActivity {
         btnAddFood = findViewById(R.id.btn_food);
         btnShowCountry = findViewById(R.id.btnCountry);
 
-        btnAddFood.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnAddFood.setOnClickListener(v -> {
 
-                Intent newIntent = new Intent(HomeActivity.this, MainActivity.class);
-                startActivity(newIntent);
-            }
+            Intent newIntent = new Intent(HomeActivity.this, MainActivity.class);
+            startActivity(newIntent);
         });
 
-        btnShowCountry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newIntent = new Intent(HomeActivity.this, CountryActivity.class);
-                startActivity(newIntent);
-            }
+        btnShowCountry.setOnClickListener(v -> {
+            Intent newIntent = new Intent(HomeActivity.this, CountryActivity.class);
+            startActivity(newIntent);
         });
     }
 }
