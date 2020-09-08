@@ -45,7 +45,8 @@
         android:id="@+id/item_switch"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="false"
         android:layout_marginTop="8dp"
         android:background="?android:attr/listChoiceIndicatorMultiple"
         android:button="@null" />
