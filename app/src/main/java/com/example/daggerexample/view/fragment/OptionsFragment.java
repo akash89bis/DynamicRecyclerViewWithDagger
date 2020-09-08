@@ -4,13 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.daggerexample.R;
+import com.example.daggerexample.framework.CustomButton;
 
 
 import butterknife.BindView;
@@ -19,8 +18,8 @@ import dagger.android.support.DaggerFragment;
 
 public class OptionsFragment extends DaggerFragment {
 
-    @BindView(R.id.btnCountry)
-    Button btnShowCountry;
+    @BindView(R.id.btn_primary)
+    CustomButton customButtonPrimary;
 
     @Nullable
     @Override
@@ -34,7 +33,7 @@ public class OptionsFragment extends DaggerFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnShowCountry.setOnClickListener(v -> {
+        customButtonPrimary.setOnClickListener(v -> {
             CountryFragment fragment = new CountryFragment();
             FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.screenContainer, fragment);
