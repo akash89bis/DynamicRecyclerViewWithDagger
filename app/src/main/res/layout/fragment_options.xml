@@ -15,21 +15,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnCountry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Show Country"
-        app:layout_constraintEnd_toEndOf="@+id/btn_food"
-        app:layout_constraintStart_toStartOf="@+id/btn_food"
-        app:layout_constraintTop_toBottomOf="@+id/btn_food" />
+    <com.example.daggerexample.framework.CustomButton
+        style="@style/PrimaryButtonStyle"
+        android:layout_marginBottom="16dp"
+        android:id="@+id/btn_primary"
+        app:buttonText="Show Country"
+        app:buttonTextColor="@color/colorWhite"
+        app:layout_constraintBottom_toTopOf="@+id/btn_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.example.daggerexample.framework.CustomButton
         style="@style/SecondaryButtonStyle"
         android:layout_marginBottom="16dp"
+        android:id="@+id/btn_secondary"
         app:buttonText="Custom Button"
-        app:buttonTextColor="@color/colorWhite"
+        app:buttonTextColor="@color/colorFacebookBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
